@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>העלייה שלי</title>
+<meta name="theme-color" content="#0b0b10">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="העלייה שלי">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0b0b10;
+  --bg2:     #111118;
+  --bg3:     #18181f;
+  --surface: #1d1d26;
+  --sf2:     #23232e;
+  --sf3:     #2a2a38;
+  --brd:     rgba(255,255,255,0.06);
+  --brd2:    rgba(255,255,255,0.12);
+  --brd3:    rgba(255,255,255,0.18);
+  --txt:     #e8e8f0;
+  --txt2:    #8888a8;
+  --txt3:    #4a4a68;
+  --gold:    #f0c040;
+  --gold2:   #c89a00;
+  --gold3:   rgba(240,192,64,0.12);
+  --blue:    #5b8df8;
+  --blue2:   #2050d0;
+  --blue3:   rgba(91,141,248,0.12);
+  --green:   #38d68a;
+  --green2:  #18a860;
+  --green3:  rgba(56,214,138,0.10);
+  --red:     #f05050;
+  --purple:  #9b7ef8;
+  --r:       14px;
+  --r-sm:    9px;
+  --r-lg:    20px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Heebo',sans-serif;
+  background:var(--bg);
+  color:var(--txt);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.5;
+  padding-bottom:90px;
+  overflow-x:hidden;
+}
+button{font-family:'Heebo',sans-serif;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+
+/* ── SCROLLBAR ─────────────────────────────────── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:99px}
+
+/* ── LAYOUT ─────────────────────────────────────── */
+#app{max-width:500px;margin:0 auto;padding:0 16px}
+
+/* ── HEADER ─────────────────────────────────────── */
+.hdr{padding:24px 0 16px;text-align:center}
+.hdr-title{
+  font-size:30px;font-weight:900;letter-spacing:-1.5px;
+  background:linear-gradient(135deg,var(--gold) 0%,#fff 55%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:inline-block;
+}
+.hdr-sub{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:6px;padding:4px 14px;
+  background:var(--sf2);border:1px solid var(--brd2);border-radius:99px;
+  font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--gold);
+}
+.hdr-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+
+/* ── STATS ──────────────────────────────────────── */
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.stat{
+  background:var(--surface);border:1px solid var(--brd);border-radius:var(--r);
+  padding:13px 10px;text-align:center;transition:border-color .2s
+}
+.stat:hover{border-color:var(--brd2)}
+.stat-n{font-size:24px;font-weight:900;letter-spacing:-1px;line-height:1}
+.stat-l{font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px}
+
+/* ── STREAK ─────────────────────────────────────── */
+.streak{margin-bottom:18px}
+.streak-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.streak-lbl{font-size:12px;font-weight:600;color:var(--txt2)}
+.streak-val{font-size:12px;font-weight:800;color:var(--green)}
+.streak-track{height:5px;background:var(--sf2);border-radius:99px;overflow:hidden}
+.streak-fill{
+  height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--green2),var(--green));
+  transition:width .9s cubic-bezier(.22,1,.36,1);
+}
+
+/* ── NAV ────────────────────────────────────────── */
+.nav{
+  position:sticky;top:10px;z-index:100;
+  display:flex;gap:3px;
+  background:rgba(11,11,16,.88);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--brd2);border-radius:13px;
+  padding:5px;margin-bottom:22px;
+}
+.ntab{
+  flex:1;padding:9px 4px;border-radius:9px;
+  font-size:11px;font-weight:700;color:var(--txt3);
+  transition:all .18s;text-align:center;letter-spacing:.2px;
+}
+.ntab.on{background:var(--sf2);color:var(--txt);border:1px solid var(--brd2)}
+
+/* ── PAGES ──────────────────────────────────────── */
+.pg{display:none}
+.pg.on{display:block}
+
+/* ── SECTION HEAD ───────────────────────────────── */
+.sh{display:flex;align-items:baseline;gap:10px;margin-bottom:18px}
+.sh-t{font-size:21px;font-weight:900;letter-spacing:-.5px}
+.sh-s{font-size:12px;color:var(--txt2);font-weight:500}
+
+/* ── SLOT ───────────────────────────────────────── */
+.slot{margin-bottom:26px}
+.slot-hd{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:10px;padding-bottom:10px;
+  border-bottom:1px solid var(--brd);
+}
+.slot-ico{
+  width:34px;height:34px;border-radius:9px;
+  background:var(--sf2);display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.slot-info{}
+.slot-name{font-size:13px;font-weight:800}
+.slot-time{font-size:11px;color:var(--txt3);font-weight:600}
+
+/* ── TASK ───────────────────────────────────────── */
+.task{
+  display:flex;align-items:center;gap:11px;
+  padding:12px 13px;
+  background:var(--surface);border:1px solid var(--brd);border-radius:var(--r-sm);
+  margin-bottom:7px;cursor:pointer;
+  transition:all .15s;user-select:none;
+}
+.task:active{transform:scale(.98)}
+.task.done{opacity:.38;border-color:transparent;background:var(--bg3)}
+.task.done .tn{text-decoration:line-through;color:var(--txt3)}
+.task.done .tpts{color:var(--txt3)}
+.tcb{
+  width:21px;height:21px;border-radius:6px;
+  border:1.5px solid var(--brd2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .18s;
+}
+.task.done .tcb{background:var(--green2);border-color:var(--green2)}
+.tcb svg{display:none}
+.task.done .tcb svg{display:block}
+.tbody{flex:1;min-width:0}
+.tn{font-size:13px;font-weight:600;line-height:1.35}
+.tcat{
+  display:inline-block;font-size:10px;font-weight:700;
+  color:var(--txt3);background:var(--bg3);
+  padding:1px 5px;border-radius:4px;margin-top:3px;letter-spacing:.4px;
+}
+.tpts{font-size:12px;font-weight:900;color:var(--gold);flex-shrink:0;letter-spacing:-.5px}
+
+/* ── PROGRESS RING (today) ──────────────────────── */
+.day-ring-wrap{display:flex;justify-content:center;margin-bottom:22px}
+.day-ring-box{position:relative;width:100px;height:100px}
+.day-ring-box svg{transform:rotate(-90deg)}
+.day-ring-label{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.day-ring-pct{font-size:20px;font-weight:900;color:var(--txt)}
+.day-ring-sub{font-size:10px;color:var(--txt3);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── LEVELS ─────────────────────────────────────── */
+.lvlcard{
+  background:var(--surface);border:1px solid var(--brd);border-radius:var(--r);
+  padding:15px;margin-bottom:10px;transition:all .2s;
+}
+.lvlcard.cur{border-color:var(--gold2);background:rgba(240,192,64,.04)}
+.lvlcard.lk{opacity:.35;pointer-events:none}
+.lvl-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.lvl-num{font-size:14px;font-weight:900}
+.badge{font-size:10px;font-weight:800;padding:3px 9px;border-radius:99px;letter-spacing:.4px}
+.badge-cur{background:rgba(240,192,64,.15);color:var(--gold)}
+.badge-ok{background:var(--green3);color:var(--green2)}
+.badge-lk{background:var(--bg3);color:var(--txt3)}
+.lvl-days{font-size:11px;color:var(--txt3);font-weight:600;margin-bottom:8px}
+.lvl-tasks{display:grid;gap:3px}
+.lvl-tr{display:flex;gap:7px;font-size:11px;color:var(--txt2);align-items:flex-start;padding:2px 0}
+.lvl-dot{width:4px;height:4px;border-radius:50%;background:var(--txt3);margin-top:5px;flex-shrink:0}
+
+/* ── REWARDS ─────────────────────────────────────── */
+.pts-banner{
+  background:var(--surface);border:1px solid var(--brd2);border-radius:var(--r-lg);
+  padding:22px;text-align:center;margin-bottom:22px;
+  position:relative;overflow:hidden;
+}
+.pts-banner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(240,192,64,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.pts-big{font-size:56px;font-weight:900;letter-spacing:-2px;color:var(--gold);line-height:1}
+.pts-lbl{font-size:11px;color:var(--txt2);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+.pts-tip{font-size:11px;color:var(--txt3);margin-top:4px}
+
+.rcat-title{
+  font-size:11px;font-weight:800;color:var(--txt2);text-transform:uppercase;letter-spacing:1.5px;
+  margin:24px 0 10px;padding-inline-start:10px;border-inline-start:3px solid var(--purple);
+}
+.ri{
+  display:flex;align-items:center;gap:11px;padding:13px 13px;
+  background:var(--surface);border:1px solid var(--brd);border-radius:var(--r-sm);
+  margin-bottom:7px;transition:all .18s;
+}
+.ri.can{border-color:rgba(240,192,64,.25);background:rgba(240,192,64,.03)}
+.ri.used{opacity:.3;pointer-events:none}
+.ri.locked-lv{opacity:.5}
+.ri-body{flex:1;min-width:0}
+.ri-title{font-size:13px;font-weight:700;line-height:1.3}
+.ri-desc{font-size:11px;color:var(--txt2);margin-top:3px;font-weight:400}
+.ri-right{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex-shrink:0}
+.ri-cost{font-size:13px;font-weight:900;color:var(--gold);letter-spacing:-.3px}
+.rbtn{
+  padding:6px 12px;border-radius:7px;font-size:11px;font-weight:800;
+  transition:all .15s;letter-spacing:.3px;white-space:nowrap;
+}
+.rbtn.go{background:var(--gold);color:#000}
+.rbtn.go:hover{background:var(--gold2);transform:scale(1.04)}
+.rbtn.no{background:var(--bg3);color:var(--txt3);cursor:not-allowed}
+.rbtn.done{background:var(--green3);color:var(--green2);cursor:default}
+.rbtn.lock{background:var(--bg3);color:var(--txt3);cursor:not-allowed;font-size:10px}
+
+/* ── CALENDAR ────────────────────────────────────── */
+.cal-box{
+  background:var(--surface);border:1px solid var(--brd);border-radius:var(--r-lg);
+  padding:20px;margin-bottom:18px;
+}
+.cal-mth{text-align:center;font-size:15px;font-weight:800;margin-bottom:18px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal-dow{text-align:center;font-size:10px;font-weight:700;color:var(--txt3);padding-bottom:8px;letter-spacing:.5px}
+.cal-day{
+  aspect-ratio:1;border-radius:7px;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:600;color:var(--txt2);background:var(--sf2);
+}
+.cal-day.hit{background:var(--green2);color:#fff;font-weight:700}
+.cal-day.now{outline:2px solid var(--blue);outline-offset:1px}
+.cal-day.mt{background:none}
+.hist-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 15px;background:var(--surface);border:1px solid var(--brd);
+  border-radius:var(--r-sm);margin-bottom:7px;
+}
+.hist-d{font-size:13px;font-weight:600;color:var(--txt2)}
+.hist-t{font-size:11px;color:var(--txt3);margin-top:1px}
+.hist-p{font-size:14px;font-weight:900;color:var(--gold)}
+
+/* ── TOAST ───────────────────────────────────────── */
+#toast{
+  position:fixed;bottom:22px;left:50%;
+  transform:translateX(-50%) translateY(70px);
+  background:var(--txt);color:var(--bg);
+  padding:11px 22px;border-radius:99px;
+  font-size:13px;font-weight:800;z-index:999;
+  transition:transform .28s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;white-space:nowrap;
+}
+#toast.up{transform:translateX(-50%) translateY(0)}
+
+/* ── LEVEL-UP OVERLAY ────────────────────────────── */
+#lu{
+  display:flex;position:fixed;inset:0;
+  background:rgba(0,0,0,.88);z-index:800;
+  align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;
+  transition:opacity .25s ease, visibility .25s ease;
+}
+#lu.on{opacity:1;visibility:visible}
+.lu-box{
+  background:var(--sf2);border:1px solid var(--gold2);border-radius:24px;
+  padding:40px 30px;text-align:center;max-width:310px;width:90%;
+  animation:pop .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.lu-ico{font-size:54px;margin-bottom:14px}
+.lu-title{font-size:26px;font-weight:900;letter-spacing:-1px;color:var(--gold)}
+.lu-sub{font-size:14px;color:var(--txt2);margin-top:8px;font-weight:500;line-height:1.5}
+.lu-btn{
+  margin-top:22px;padding:13px 28px;
+  background:var(--gold);color:#000;border-radius:12px;
+  font-size:14px;font-weight:800;width:100%;font-family:'Heebo',sans-serif;cursor:pointer;
+}
+
+/* ── CONFETTI ────────────────────────────────────── */
+.conf{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:799;
+}
+
+/* ── GRACE DAY BADGE ─────────────────────────────── */
+.grace-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.3);
+  border-radius:99px;padding:4px 11px;font-size:11px;font-weight:700;color:var(--gold);
+  margin-bottom:14px;cursor:pointer;transition:all .15s;
+}
+.grace-badge:hover{background:rgba(240,192,64,.2)}
+.grace-badge.used{background:var(--bg3);border-color:var(--brd);color:var(--txt3);cursor:default}
+
+/* ── MODAL ───────────────────────────────────────── */
+.modal-bg{
+  display:flex;position:fixed;inset:0;
+  background:rgba(0,0,0,.88);z-index:900;
+  align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;
+  transition:opacity .22s ease,visibility .22s ease;
+}
+.modal-bg.on{opacity:1;visibility:visible}
+.modal{
+  background:var(--sf2);border:1px solid var(--brd2);border-radius:20px;
+  padding:28px 24px;max-width:340px;width:92%;
+  animation:pop .35s cubic-bezier(.34,1.56,.64,1);
+}
+.modal-title{font-size:18px;font-weight:900;margin-bottom:18px;letter-spacing:-.4px}
+.modal input,.modal textarea{
+  width:100%;background:var(--bg3);border:1px solid var(--brd2);border-radius:10px;
+  color:var(--txt);font-family:'Heebo',sans-serif;font-size:13px;
+  padding:10px 13px;margin-bottom:10px;outline:none;
+  transition:border-color .15s;
+}
+.modal input:focus,.modal textarea:focus{border-color:var(--gold)}
+.modal textarea{resize:none;height:60px}
+.modal-row{display:flex;gap:8px;margin-bottom:10px}
+.modal-row input{margin-bottom:0}
+.modal-btns{display:flex;gap:8px;margin-top:6px}
+.mbtn{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:800;transition:all .15s}
+.mbtn-ok{background:var(--gold);color:#000}
+.mbtn-ok:hover{background:var(--gold2)}
+.mbtn-cancel{background:var(--bg3);color:var(--txt2)}
+
+/* ── SETTINGS PANEL ──────────────────────────────── */
+.settings-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;padding:11px;
+  background:var(--surface);border:1px solid var(--brd);border-radius:var(--r-sm);
+  font-size:12px;font-weight:700;color:var(--txt2);
+  margin-bottom:8px;transition:all .15s;
+}
+.settings-btn:hover{border-color:var(--brd2);color:var(--txt)}
+.settings-btn.danger{color:var(--red);border-color:rgba(240,80,80,.2)}
+.settings-btn.danger:hover{background:rgba(240,80,80,.06);border-color:rgba(240,80,80,.4)}
+.custom-r-add{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px;border:1.5px dashed var(--brd2);border-radius:var(--r-sm);
+  font-size:12px;font-weight:700;color:var(--txt3);
+  cursor:pointer;transition:all .15s;margin-bottom:10px;
+}
+.custom-r-add:hover{border-color:var(--gold);color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-title">העלייה שלי</div><br>
+    <div class="hdr-sub"><div class="hdr-dot"></div><span id="hdr-lvl">שלב 1 מ-15</span><span style="color:var(--txt3)">•</span><span id="hdr-pct" style="color:var(--txt2)">0% מהחזון</span></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="s-today" style="color:var(--blue)">0</div><div class="stat-l">היום</div></div>
+    <div class="stat"><div class="stat-n" id="s-bank" style="color:var(--gold)">0</div><div class="stat-l">בנק</div></div>
+    <div class="stat"><div class="stat-n" id="s-streak" style="color:var(--green)">0</div><div class="stat-l">רצף</div></div>
+  </div>
+
+  <!-- STREAK -->
+  <div class="streak">
+    <div class="streak-row">
+      <span class="streak-lbl">התקדמות לשלב הבא</span>
+      <span class="streak-val" id="streak-txt"></span>
+    </div>
+    <div class="streak-track"><div class="streak-fill" id="streak-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <button class="ntab on" id="btn-today"    onclick="nav('today')">סדר יום</button>
+    <button class="ntab"    id="btn-levels"   onclick="nav('levels')">שלבים</button>
+    <button class="ntab"    id="btn-rewards"  onclick="nav('rewards')">צ'ופרים</button>
+    <button class="ntab"    id="btn-cal"      onclick="nav('cal')">היסטוריה</button>
+    <button class="ntab"    id="btn-settings" onclick="nav('settings')">⚙️</button>
+  </div>
+
+  <!-- TODAY -->
+  <div id="pg-today" class="pg on">
+    <div class="sh"><span class="sh-t">משימות יומיות</span><span class="sh-s" id="sh-sub"></span></div>
+    <div style="text-align:center;margin-bottom:14px">
+      <span class="grace-badge" id="grace-badge" onclick="useGrace()">🛡️ יום חסד — שמור לשעת הצורך</span>
+    </div>
+    <div class="day-ring-wrap">
+      <div class="day-ring-box">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="var(--sf2)" stroke-width="8"/>
+          <circle id="ring-arc" cx="50" cy="50" r="42" fill="none" stroke="var(--green)" stroke-width="8"
+            stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264"
+            style="transition:stroke-dashoffset .9s cubic-bezier(.22,1,.36,1)"/>
+        </svg>
+        <div class="day-ring-label">
+          <div class="day-ring-pct" id="ring-pct">0%</div>
+          <div class="day-ring-sub">הושלם</div>
+        </div>
+      </div>
+    </div>
+    <div id="today-content"></div>
+  </div>
+
+  <!-- LEVELS -->
+  <div id="pg-levels" class="pg">
+    <div class="sh"><span class="sh-t">מפת הדרכים</span></div>
+    <div id="levels-content"></div>
+  </div>
+
+  <!-- REWARDS -->
+  <div id="pg-rewards" class="pg">
+    <div class="pts-banner">
+      <div class="pts-big" id="pts-big">0</div>
+      <div class="pts-lbl">נקודות זמינות</div>
+      <div class="pts-tip" id="pts-tip"></div>
+    </div>
+    <div id="rewards-content"></div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div id="pg-cal" class="pg">
+    <div class="sh"><span class="sh-t">היסטוריה</span></div>
+    <div class="cal-box">
+      <div class="cal-mth" id="cal-mth"></div>
+      <div class="cal-grid" id="cal-dows"></div>
+      <div class="cal-grid" id="cal-grid" style="margin-top:0"></div>
+    </div>
+    <div id="hist-list"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="pg-settings" class="pg">
+    <div class="sh"><span class="sh-t">הגדרות</span></div>
+
+    <div style="background:var(--surface);border:1px solid var(--brd);border-radius:var(--r);padding:18px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:800;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">יום חסד</div>
+      <div style="font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:10px">
+        פעם בחודש תוכל להשתמש ב"יום חסד" — אם פספסת יום, הרצף לא יאופס. מופיע כפתור בדף המשימות.
+      </div>
+      <div style="font-size:12px;color:var(--txt3)" id="grace-status-txt"></div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--brd);border-radius:var(--r);padding:18px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:800;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">צ'ופרים אישיים</div>
+      <div style="font-size:13px;color:var(--txt2);margin-bottom:12px">הוסף פרסים מותאמים אישית שלא מופיעים ברשימה.</div>
+      <div id="custom-rewards-list"></div>
+      <div class="custom-r-add" onclick="openAddReward()">+ הוסף צ'ופר אישי</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--brd);border-radius:var(--r);padding:18px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:800;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">אפליקציה לטלפון (PWA)</div>
+      <div style="font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:12px">
+        כדי להתקין כאפליקציה על מסך הבית:<br>
+        <strong style="color:var(--txt)">אנדרואיד:</strong> תפריט דפדפן ← "הוסף למסך הבית"<br>
+        <strong style="color:var(--txt)">iPhone:</strong> כפתור שיתוף ← "הוסף למסך הבית"
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid rgba(240,80,80,.15);border-radius:var(--r);padding:18px">
+      <div style="font-size:12px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">אזור סכנה</div>
+      <button class="settings-btn danger" onclick="resetData()">🗑️ איפוס כל הנתונים</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<canvas class="conf" id="conf-canvas"></canvas>
+
+<!-- LEVEL UP -->
+<div id="lu">
+  <div class="lu-box">
+    <div class="lu-ico">🎯</div>
+    <div class="lu-title" id="lu-title">עלית שלב!</div>
+    <div class="lu-sub" id="lu-sub"></div>
+    <button class="lu-btn" onclick="closeLU()">יאללה, שלב חדש! ←</button>
+  </div>
+</div>
+
+<!-- ADD CUSTOM REWARD MODAL -->
+<div class="modal-bg" id="modal-reward">
+  <div class="modal">
+    <div class="modal-title">✨ צ'ופר אישי חדש</div>
+    <input id="cr-title" placeholder="שם הפרס (למשל: ערב סרט)" maxlength="40">
+    <input id="cr-desc"  placeholder="תיאור קצר" maxlength="60">
+    <div class="modal-row">
+      <input id="cr-pts" type="number" placeholder="נקודות" min="1" max="9999" style="width:50%">
+      <input id="cr-emoji" placeholder="אמוג'י (אופציונלי)" maxlength="4" style="width:50%">
+    </div>
+    <div class="modal-btns">
+      <button class="mbtn mbtn-cancel" onclick="closeModal('modal-reward')">ביטול</button>
+      <button class="mbtn mbtn-ok" onclick="saveCustomReward()">הוסף ✓</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+const SK = 'aliyah_v31';
+const MAX_LVL = 15;
+
+function def() {
+  return {
+    done:{}, history:[], totalPts:0, redeemed:[], lastDay:new Date().toDateString(),
+    level:1, streak:0,
+    graceUsedMonth: null,   // 'YYYY-MM' of last grace use
+    customRewards: []        // [{id,title,desc,pts,emoji}]
+  };
+}
+function load() {
+  try { const r=localStorage.getItem(SK); if(r) return {...def(),...JSON.parse(r)}; } catch(e){}
+  return def();
+}
+let S = load();
+const save = () => localStorage.setItem(SK, JSON.stringify(S));
+
+/* ═══════════════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════════════ */
+const CATS = {
+  zman:   '⏱ זמנים',
+  briut:  '💧 בריאות',
+  achila: '🍎 אכילה',
+  limud:  '📖 לימוד',
+  bayit:  '🏠 בית',
+  smart:  '📵 סמארטפון',
+};
+
+const SLOTS = [
+  { label:'09:00–12:00', title:'עליית הבוקר',         icon:'🌅' },
+  { label:'12:00–15:00', title:'מנוע היום',            icon:'🚀' },
+  { label:'15:00–19:00', title:'שיא הפרודוקטיביות',   icon:'⚡' },
+  { label:'19:00–22:00', title:'איפוס וריבונות',       icon:'🌙' },
+];
+
+/* ═══════════════════════════════════════════════════
+   TASK GENERATION — מכוון לחזון שלב 15
+   שלב  1: קימה 09:00 | דיליי טלפון 30 דק' | 4 כוסות | 20 דק' לימוד | ספורט 12 דק' | אכילה עד 21:00 | כיבוי טלפון 23:00
+   שלב 15: קימה 05:00 | דיליי טלפון 120 דק' | 12 כוסות | 180 דק' לימוד | ספורט 45 דק' | אכילה עד 18:00 | כיבוי טלפון 20:00
+═══════════════════════════════════════════════════ */
+function getReqStreak(lvl) { return lvl <= 5 ? 5 : lvl <= 10 ? 7 : 14; }
+
+function lerp(from, to, lvl) {
+  return Math.round(from + (to - from) * (lvl - 1) / (MAX_LVL - 1));
+}
+
+function getTasks(lvl) {
+  // ── שעת קימה: 09:00 → 05:00
+  const wakeMins = lerp(9*60, 5*60, lvl);
+  const wakeH = Math.floor(wakeMins/60), wakeM = wakeMins%60;
+  const wakeStr = `${wakeH}:${String(wakeM).padStart(2,'0')}`;
+  const wakeText = lvl === 15
+    ? `קימה ב-${wakeStr} — ללא שעון מעורר ✦`
+    : lvl <= 3
+      ? `שעון ל-${wakeStr}, קימה תוך 10 דק'`
+      : `שעון ל-${wakeStr}, קימה תוך 5 דק'`;
+
+  // ── דיליי סמארטפון בבוקר: 30 → 120 דקות
+  const delay = lerp(30, 120, lvl);
+
+  // ── כוסות מים: 4 → 12
+  const cups = lerp(4, 12, lvl);
+  const cupsMorning = Math.round(cups * 0.3);  // ~30% בבוקר
+
+  // ── לימוד עומק: 20 → 180 דקות
+  const dwMins = lerp(20, 180, lvl);
+
+  // ── ספורט: 12 → 45 דקות
+  const sport = lerp(12, 45, lvl);
+
+  // ── הפסקת אכילה: 21:00 → 18:00
+  const eatEndMins = lerp(21*60, 18*60, lvl);
+  const eatEndH = Math.floor(eatEndMins/60), eatEndM = eatEndMins%60;
+  const eatEndStr = `${eatEndH}:${String(eatEndM).padStart(2,'0')}`;
+
+  // ── סיום יום: 22:00 → 17:00
+  const endMins = lerp(22*60, 17*60, lvl);
+  const endH = Math.floor(endMins/60), endM = endMins%60;
+  const endStr = `${endH}:${String(endM).padStart(2,'0')}`;
+
+  // ── כיבוי טלפון: 23:00 → 20:00
+  const offMins = lerp(23*60, 20*60, lvl);
+  const offH = Math.floor(offMins/60), offM = offMins%60;
+  const offStr = `${offH}:${String(offM).padStart(2,'0')}`;
+
+  // ── איפוס בית: 5 → 25 דקות
+  const reset = lerp(5, 25, lvl);
+
+  // ── מחוץ לבית: 11:30 → 09:00
+  const outMins = lerp(11*60+30, 9*60, lvl);
+  const outH = Math.floor(outMins/60), outM = outMins%60;
+  const outStr = `${outH}:${String(outM).padStart(2,'0')}`;
+
+  // ── לימוד דתי — נוסף מלב 3
+  const torahText = lvl < 3
+    ? 'חת"ת יומי'
+    : lvl < 8
+      ? 'חת"ת ורמב"ם יומי'
+      : 'חת"ת, רמב"ם ודף גמרא יומי';
+
+  return [
+    // SLOT 0 — בוקר
+    { id:`z1_${lvl}`, cat:'zman',  text: wakeText,                                    pts:6+lvl,  slot:0 },
+    { id:`s1_${lvl}`, cat:'smart', text:`דיליי סמארטפון ${delay} דק' בבוקר`,          pts:11+lvl, slot:0 },
+    { id:`b1_${lvl}`, cat:'briut', text:`${cupsMorning} כוסות מים — בוקר`,             pts:5+lvl,  slot:0 },
+    { id:`h1_${lvl}`, cat:'bayit', text:'חוק 60 שניות: פריט למקומו מיד',              pts:5+lvl,  slot:0 },
+    // SLOT 1 — לפנות צהריים
+    { id:`z2_${lvl}`, cat:'zman',  text:`מחוץ לבית עד ${outStr}`,                     pts:11+lvl, slot:1 },
+    { id:`l1_${lvl}`, cat:'limud', text: torahText,                                    pts:13+lvl, slot:1 },
+    { id:`a1_${lvl}`, cat:'achila',text:'ארוחה ראשונה מסודרת, ישיבה ללא מסכים + OAS', pts:7+lvl,  slot:1 },
+    // SLOT 2 — אחר הצהריים
+    { id:`l2_${lvl}`, cat:'limud', text:`${dwMins} דקות לימוד עומק (ללא טלפון)`,       pts:16+lvl, slot:2 },
+    { id:`z3_${lvl}`, cat:'zman',  text:'תכנון לו"ז מחר — גושי זמן',                 pts:11+lvl, slot:2 },
+    { id:`b2_${lvl}`, cat:'briut', text:`פעילות גופנית ${sport} דקות`,                pts:9+lvl,  slot:2 },
+    { id:`b3_${lvl}`, cat:'briut', text:`${cups} כוסות מים — סה"כ ביום`,              pts:5+lvl,  slot:2 },
+    // SLOT 3 — ערב
+    { id:`a3_${lvl}`, cat:'achila',text:`הפסקת אכילה ב-${eatEndStr}`,                 pts:13+lvl, slot:3 },
+    { id:`h2_${lvl}`, cat:'bayit', text:`איפוס בית ${reset} דקות — "מוזיאון"`,        pts:9+lvl,  slot:3 },
+    { id:`s3_${lvl}`, cat:'smart', text:`כיבוי טלפון ב-${offStr} — שקט דיגיטלי`,     pts:16+lvl, slot:3 },
+    { id:`z4_${lvl}`, cat:'zman',  text: lvl < 15
+        ? `סיום כל מטלות עד ${endStr}`
+        : `סיום יום ב-${endStr} — ריבונות מלאה ✦`,                                    pts:11+lvl, slot:3 },
+  ];
+}
+
+/* ─── DOMAIN PROGRESS ───────────────────────────── */
+// Returns % per domain at lvl vs vision (lvl 15 = 100%)
+function domainProgress(lvl) {
+  const l = lerp;
+  return [
+    { name:'⏱ זמנים',     val: Math.round((9*60 - l(9*60,5*60,lvl)) / (9*60-5*60) * 100),  color:'var(--blue)'   },
+    { name:'💧 בריאות',    val: Math.round((l(0,30,lvl)) / 30 * 100),                         color:'var(--green)'  },
+    { name:'🍎 אכילה',     val: Math.round((21*60 - l(21*60,18*60,lvl)) / (3*60) * 100),     color:'#f07840'       },
+    { name:'📖 לימוד',     val: Math.round((l(20,180,lvl) - 20) / 160 * 100),                 color:'var(--purple)' },
+    { name:'🏠 בית',       val: Math.round((l(5,25,lvl) - 5) / 20 * 100),                     color:'var(--gold)'   },
+    { name:'📵 סמארטפון',  val: Math.round((l(30,120,lvl) - 30) / 90 * 100),                  color:'var(--red)'    },
+  ];
+}
+
+/* ═══════════════════════════════════════════════════
+   REWARDS  (3 focused categories + premium)
+═══════════════════════════════════════════════════ */
+const REWARDS = [
+  { cat:'🎬  סדרות עומק', items:[
+    { id:'sh1',  pts:40,  title:'שוגן – פרק 1',                desc:'אסטרטגיה, תרבות וכבוד ביפן העתיקה' },
+    { id:'ch1',  pts:50,  title:'צ\'רנוביל – פרק 1',           desc:'אמת, אחריות ומחיר השקר' },
+    { id:'wi1',  pts:55,  title:'הסמויה (The Wire) – פרק 1',  desc:'ניתוח חברתי עמוק של מערכות' },
+    { id:'su1',  pts:45,  title:'יורשים (Succession) – פרק 1',desc:'על כוח, משפחה ודינמיקה אנושית' },
+    { id:'st1',  pts:38,  title:'שטיסל – פרק 1',              desc:'דרמה יהודית עמוקה ואנושית' },
+    { id:'cr1',  pts:42,  title:'הכתר (The Crown) – פרק 1',   desc:'היסטוריה, משילות ומחיר הכתר' },
+    { id:'ld1',  pts:40,  title:'הריקוד האחרון – פרק 1',      desc:'השראה למצוינות ועבודה קשה' },
+    { id:'pe1',  pts:35,  title:'עולם מופלא (Planet Earth)',   desc:'יופי הבריאה בראייה מרהיבה' },
+    { id:'co1',  pts:35,  title:'קוסמוס – פרק 1',             desc:'מסע פילוסופי ומדעי ביקום' },
+    { id:'bb1',  pts:45,  title:'אחים לנשק – פרק 1',          desc:'אחוות לוחמים ואנושיות' },
+    { id:'sh2',  pts:70,  title:'שוגן – פרקים 2–3',           desc:'צלילה לעומק המשחק הפוליטי' },
+    { id:'ch2',  pts:85,  title:'צ\'רנוביל – פרקים 2–3',      desc:'שיא הדרמה וההקרבה האנושית' },
+    { id:'bb2',  pts:80,  title:'אחים לנשק – פרקים 2–3',      desc:'הקרב המתעמק' },
+    { id:'wi2',  pts:90,  title:'הסמויה – פרקים 2–4',        desc:'השכבות נחשפות', minLevel:4 },
+    { id:'su2',  pts:95,  title:'יורשים – פרקים 2–4',        desc:'הפוליטיקה המשפחתית מעמיקה', minLevel:4 },
+  ]},
+  { cat:'🎥  קולנוע מופת', items:[
+    { id:'m1',   pts:90,  title:'12 המושבעים',                desc:'הגינות, אמת ועמידה מול הזרם' },
+    { id:'m2',   pts:95,  title:'המופע של טרומן',             desc:'על המציאות, הבחירה וההתעוררות' },
+    { id:'m3',   pts:105, title:'התחלה (Inception)',          desc:'שליטה בתודעה ובמחשבה' },
+    { id:'m4',   pts:115, title:'בין כוכבים (Interstellar)',  desc:'זמן, אהבה ומדע בקנה מידה קוסמי' },
+    { id:'m5',   pts:125, title:'הפסנתרן',                   desc:'שרידה ואנושיות בשיא האופל' },
+    { id:'m6',   pts:135, title:'רשימת שינדלר',               desc:'על ערך חיי אדם אחד' },
+    { id:'m7',   pts:90,  title:'פורסט גאמפ',                desc:'היסטוריה מבעד לעיניו של אדם טהור' },
+    { id:'m8',   pts:105, title:'הסנדק',                     desc:'ניהול כוח, משפחה ונאמנות' },
+    { id:'m9',   pts:110, title:'פרזיטים (Parasite)',         desc:'ניתוח חברתי חריף ומותח' },
+    { id:'m10',  pts:120, title:'שבעת הסמוראים',             desc:'הקרבה וקהילה — יצירת מופת' },
+    { id:'m11',  pts:105, title:'החיים יפים',                desc:'אופטימיות וכוח הרוח' },
+    { id:'m12',  pts:100, title:'חומות של תקווה',            desc:'על חופש פנימי וסבלנות' },
+    { id:'m13',  pts:115, title:'להציל את טוראי ראיין',      desc:'המחיר המוסרי של גבורה' },
+    { id:'m14',  pts:100, title:'הדיקטטור הגדול',            desc:'סאטירה נוקבת על אנושיות' },
+    { id:'m15',  pts:125, title:'2001: אודיסאה בחלל',        desc:'פילוסופיה של האבולוציה' },
+    { id:'m16',  pts:95,  title:'נפלאות התבונה',              desc:'גאונות, מוח ולב' },
+    { id:'m17',  pts:100, title:'ממנטו',                     desc:'זיכרון, זהות ואמת' },
+    { id:'m18',  pts:160, title:'אפוקליפסה עכשיו',           desc:'מסע אל קיצוניות האנושית', minLevel:10 },
+    { id:'m19',  pts:175, title:'ברייקינג בד — בינג׳ 3 פרקים',desc:'אחד הסיפורים הגדולים בטלוויזיה', minLevel:6 },
+  ]},
+  { cat:'📚  ספרות וקריאה', items:[
+    { id:'b1',   pts:45,  title:'1984 (אורוול)',              desc:'חירות המחשבה וההתנגדות' },
+    { id:'b2',   pts:45,  title:'הנסיך הקטן',                desc:'פילוסופיה של הלב' },
+    { id:'b3',   pts:40,  title:'אדם מחפש משמעות (פרנקל)',   desc:'הבסיס לחוסן נפשי' },
+    { id:'b4',   pts:38,  title:'הזקן והים',                  desc:'מאבק האדם בטבע בכבוד' },
+    { id:'b5',   pts:50,  title:'אל תיגע בזמיר',             desc:'צדק, ילדות ומוסר חברתי' },
+    { id:'b6',   pts:55,  title:'עולם חדש מופלא (האקסלי)',    desc:'חזון דיסטופי על אושר מזויף' },
+    { id:'b7',   pts:50,  title:'האלכימאי',                  desc:'המסע האישי וגשמת יעדים' },
+    { id:'b8',   pts:70,  title:'עלובי החיים (ויקטור הוגו)',  desc:'על צדק, חסד וגאולה' },
+    { id:'b9',   pts:75,  title:'החטא ועונשו (דוסטויבסקי)',  desc:'מוסר וייסורים פנימיים' },
+    { id:'b10',  pts:85,  title:'האחים קרמזוב',              desc:'צלילה לנבכי המוסר והאמונה' },
+    { id:'b11',  pts:65,  title:'ענבי זעם (סטיינבק)',        desc:'כבוד האדם העובד' },
+    { id:'b12',  pts:90,  title:'אנה קרנינה',                desc:'רומן מופת על משפחה וחברה' },
+    { id:'b13',  pts:60,  title:'מובי דיק',                  desc:'אובססיה, גורל וטבע האדם' },
+    { id:'b14',  pts:60,  title:'כוח הרגל (Duhigg)',         desc:'מדע הרגלים לשינוי חיים' },
+    { id:'b15',  pts:55,  title:'אטומיק הביטס',              desc:'מערכת לרגלים קטנים, שינוי גדול' },
+  ]},
+  { cat:'🥾  פעילות גופנית והרפתקאות', items:[
+    { id:'sp1',  pts:60,  title:'שיעור ספורט מיוחד',         desc:'בוקס, יוגה, כל מה שאוהב' },
+    { id:'sp2',  pts:55,  title:'שעת אופניים חופשית',        desc:'לנסוע בלי יעד' },
+    { id:'sp3',  pts:70,  title:'שחייה / ים / בריכה — שעה', desc:'שעה לבד עם המים' },
+    { id:'sp4',  pts:95,  title:'טיול יום עצמאי',            desc:'טבע, הליכה, ניקוי ראש' },
+    { id:'sp5',  pts:75,  title:'טיפוס / ספורט אקסטרים',    desc:'אדרנלין מבוקר ומתוכנן', minLevel:3 },
+    { id:'sp6',  pts:160, title:'טיול לין / לילה בטבע',      desc:'חוויה מחוץ לשגרה לחלוטין', minLevel:5 },
+    { id:'sp7',  pts:220, title:'טיול סוף שבוע — יעד לבחירה',desc:'שני ימים חופשיים בטבע', minLevel:7 },
+  ]},
+  { cat:'✨  פרמיום — שלבים גבוהים', items:[
+    { id:'px1',  pts:250, title:'קניית פריט שתמיד רצית',     desc:'עד 500 ₪ לשיקולך', minLevel:7 },
+    { id:'px2',  pts:350, title:'יום חופש מלא',               desc:'24 שעות ללא אג\'נדה', minLevel:9 },
+    { id:'px3',  pts:500, title:'חופשת סוף שבוע',             desc:'לאן שמתחשק', minLevel:11 },
+    { id:'px4',  pts:700, title:'חופשה שבועית — חלום',       desc:'שבוע שלם לבחירה חופשית', minLevel:14 },
+  ]},
+];
+
+/* ═══════════════════════════════════════════════════
+   DAY ROLLOVER
+═══════════════════════════════════════════════════ */
+let pendingLU = null;
+(function() {
+  const today = new Date().toDateString();
+  if (S.lastDay === today) return;
+  const pts = calcDayPts();
+  const tasks = getTasks(S.level);
+  const doneC = tasks.filter(t => S.done[t.id]).length;
+  const need = Math.ceil(tasks.length * 0.8);
+  if (doneC >= need) {
+    S.streak++;
+    if (S.streak >= getReqStreak(S.level) && S.level < MAX_LVL) {
+      pendingLU = S.level + 1;
+      S.level = pendingLU;
+      S.streak = 0;
+    }
+  } else {
+    // Check if grace day available and streak > 0 (worth protecting)
+    const thisMonth = new Date().toISOString().slice(0,7);
+    const graceAvail = S.graceUsedMonth !== thisMonth && S.streak >= 3;
+    if (!graceAvail) S.streak = 0;
+    // if grace available, streak survives — user sees the badge as "used automatically"
+    else { S.graceUsedMonth = thisMonth; toast('🛡️ יום החסד הופעל — הרצף נשמר!'); }
+  }
+  if (pts > 0 || doneC > 0) S.history.unshift({ date:S.lastDay, pts, tasks:doneC });
+  S.totalPts += pts;
+  S.done = {};
+  S.lastDay = today;
+  save();
+})();
+
+/* ═══════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════ */
+function calcDayPts() {
+  return getTasks(S.level).reduce((s,t) => s + (S.done[t.id]?t.pts:0), 0);
+}
+function calcAvail() {
+  return S.totalPts + calcDayPts();
+}
+
+/* ═══════════════════════════════════════════════════
+   ACTIONS
+═══════════════════════════════════════════════════ */
+function toggleTask(id, pts) {
+  if (S.done[id]) {
+    // guard: don't undo if it would cause negative bank
+    if (calcAvail() - pts < 0) { toast('לא ניתן לבטל — נקודות כבר מומשו'); return; }
+    delete S.done[id];
+  } else {
+    S.done[id] = true;
+    toast(`+${pts} ✓`);
+  }
+  save(); renderActive();
+}
+
+function redeem(id, pts, minLvl) {
+  if (minLvl && S.level < minLvl) { toast(`זמין משלב ${minLvl}`); return; }
+  const avail = calcAvail();
+  if (avail < pts) { toast('אין מספיק נקודות'); return; }
+  if (!confirm(`לממש תמורת ${pts} נקודות?`)) return;
+  // charge: daily pts first, then bank
+  const daily = calcDayPts();
+  if (pts <= S.totalPts) {
+    S.totalPts -= pts;
+  } else {
+    // avail >= pts guaranteed; set bank so avail-pts = (bank+daily)-pts
+    S.totalPts = avail - pts;
+  }
+  S.redeemed.push(id);
+  save();
+  toast('מומש! 🎊 תהנה');
+  renderActive();
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — SHARED STATS
+═══════════════════════════════════════════════════ */
+function renderStats() {
+  const daily = calcDayPts();
+  document.getElementById('s-today').textContent = daily;
+  document.getElementById('s-bank').textContent = calcAvail();
+  document.getElementById('s-streak').textContent = S.streak;
+  document.getElementById('hdr-lvl').textContent = `שלב ${S.level} מ-${MAX_LVL}`;
+  // Show overall vision progress in header sub
+  const overall = Math.round(domainProgress(S.level).reduce((s,d)=>s+d.val,0)/6);
+  document.getElementById('hdr-pct').textContent = `${overall}% מהחזון`;
+  const req = getReqStreak(S.level);
+  const pct = Math.min(100, Math.round(S.streak/req*100));
+  document.getElementById('streak-fill').style.width = pct + '%';
+  document.getElementById('streak-txt').textContent = `${S.streak} / ${req} ימים`;
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — TODAY
+═══════════════════════════════════════════════════ */
+function renderToday() {
+  renderStats();
+  updateGraceBadge();
+  const tasks = getTasks(S.level);
+  const done = tasks.filter(t=>S.done[t.id]).length;
+  const pct = tasks.length ? Math.round(done/tasks.length*100) : 0;
+  const circ = 264;
+  document.getElementById('ring-arc').style.strokeDashoffset = circ - circ*pct/100;
+  document.getElementById('ring-pct').textContent = pct + '%';
+  document.getElementById('sh-sub').textContent = `שלב ${S.level} • ${done}/${tasks.length} משימות`;
+
+  let html = '';
+  SLOTS.forEach((sl, si) => {
+    const st = tasks.filter(t=>t.slot===si);
+    if (!st.length) return;
+    html += `<div class="slot">
+      <div class="slot-hd">
+        <div class="slot-ico">${sl.icon}</div>
+        <div class="slot-info">
+          <div class="slot-name">${sl.title}</div>
+          <div class="slot-time">${sl.label}</div>
+        </div>
+      </div>`;
+    st.forEach(t => {
+      const dn = !!S.done[t.id];
+      html += `<div class="task${dn?' done':''}" onclick="toggleTask('${t.id}',${t.pts})">
+        <div class="tcb">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,5.5 4,8.5 9.5,2.5"/>
+          </svg>
+        </div>
+        <div class="tbody">
+          <div class="tn">${t.text}</div>
+          <span class="tcat">${CATS[t.cat]}</span>
+        </div>
+        <div class="tpts">+${t.pts}</div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  document.getElementById('today-content').innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — LEVELS
+═══════════════════════════════════════════════════ */
+function renderLevels() {
+  // Overall vision progress card
+  const overall = Math.round(domainProgress(S.level).reduce((s,d)=>s+d.val,0) / 6);
+  let h = `
+    <div style="background:var(--surface);border:1px solid var(--gold2);border-radius:var(--r-lg);padding:20px;margin-bottom:22px;text-align:center">
+      <div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">התקדמות לחזון השלם</div>
+      <div style="font-size:48px;font-weight:900;color:var(--gold);letter-spacing:-2px;line-height:1">${overall}%</div>
+      <div style="font-size:11px;color:var(--txt3);margin-top:4px">מהאדם המלא — שלב ${S.level} מתוך 15</div>
+      <div style="margin-top:14px;display:grid;gap:8px">
+        ${domainProgress(S.level).map(d=>`
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:4px">
+              <span style="color:var(--txt2)">${d.name}</span>
+              <span style="color:${d.color}">${d.val}%</span>
+            </div>
+            <div style="height:4px;background:var(--sf2);border-radius:99px;overflow:hidden">
+              <div style="height:100%;width:${d.val}%;background:${d.color};border-radius:99px;transition:width .8s cubic-bezier(.22,1,.36,1)"></div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+
+  for (let i=1; i<=MAX_LVL; i++) {
+    const isCur = i===S.level, isDone = i<S.level, isLk = i>S.level;
+    const bClass = isCur?'badge-cur':isDone?'badge-ok':'badge-lk';
+    const bText  = isCur?'נוכחי':isDone?'✓ הושלם':'🔒';
+    const dp = domainProgress(i);
+    const ovr = Math.round(dp.reduce((s,d)=>s+d.val,0)/6);
+
+    h += `<div class="lvlcard${isCur?' cur':''}${isLk?' lk':''}">
+      <div class="lvl-hd">
+        <span class="lvl-num">שלב ${i}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;font-weight:900;color:${isCur?'var(--gold)':isDone?'var(--green)':'var(--txt3)'}">${ovr}%</span>
+          <span class="badge ${bClass}">${bText}</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin-bottom:8px">
+        ${dp.map(d=>`
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;font-weight:700;margin-bottom:2px">
+              <span style="color:var(--txt3)">${d.name}</span>
+              <span style="color:${d.color}">${d.val}%</span>
+            </div>
+            <div style="height:3px;background:var(--sf2);border-radius:99px;overflow:hidden">
+              <div style="height:100%;width:${d.val}%;background:${d.color};border-radius:99px"></div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="lvl-days">${getReqStreak(i)} ימי רצף לסיום השלב</div>
+      <div class="lvl-tasks">`;
+
+    getTasks(i).forEach(t => {
+      h += `<div class="lvl-tr"><div class="lvl-dot"></div><div>${t.text} <span style="color:var(--txt3);font-size:10px">(${t.pts} נק׳)</span></div></div>`;
+    });
+    h += `</div></div>`;
+  }
+  document.getElementById('levels-content').innerHTML = h;
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — REWARDS
+═══════════════════════════════════════════════════ */
+function renderRewards() {
+  const avail = calcAvail();
+  document.getElementById('pts-big').textContent = avail;
+  const cheapest = REWARDS.flatMap(c=>c.items)
+    .filter(r=>!S.redeemed.includes(r.id) && (!r.minLevel||S.level>=r.minLevel))
+    .sort((a,b)=>a.pts-b.pts)[0];
+  document.getElementById('pts-tip').textContent =
+    cheapest ? (avail>=cheapest.pts ? `✓ יש לך מספיק לממש "${cheapest.title}"!` : `עוד ${cheapest.pts-avail} נקודות ל"${cheapest.title}"`) : '';
+
+  let h = '';
+  REWARDS.forEach(cat => {
+    h += `<div class="rcat-title">${cat.cat}</div>`;
+    cat.items.forEach(r => {
+      const used   = S.redeemed.includes(r.id);
+      const minLvl = r.minLevel||0;
+      const lkLvl  = minLvl && S.level < minLvl;
+      const canBuy = !used && !lkLvl && avail >= r.pts;
+      let btnCls='no', btnTxt=`${r.pts} נק'`;
+      if (used)    { btnCls='done'; btnTxt='✓ מומש'; }
+      else if (lkLvl) { btnCls='lock'; btnTxt=`שלב ${minLvl}+`; }
+      else if (canBuy){ btnCls='go'; }
+      const onclick = (!used && !lkLvl) ? `onclick="redeem('${r.id}',${r.pts},${minLvl})"` : '';
+      h += `<div class="ri${used?' used':''}${canBuy?' can':''}${lkLvl?' locked-lv':''}">
+        <div class="ri-body">
+          <div class="ri-title">${r.title}</div>
+          <div class="ri-desc">${r.desc}</div>
+        </div>
+        <div class="ri-right">
+          <div class="ri-cost">${r.pts}</div>
+          <button class="rbtn ${btnCls}" ${onclick}>${btnTxt}</button>
+        </div>
+      </div>`;
+    });
+  });
+  // Custom rewards section
+  const cr = S.customRewards || [];
+  if (cr.length) {
+    h += `<div class="rcat-title">⭐  צ'ופרים אישיים</div>`;
+    cr.forEach(r => {
+      const used   = S.redeemed.includes(r.id);
+      const canBuy = !used && avail >= r.pts;
+      let btnCls='no', btnTxt=`${r.pts} נק'`;
+      if (used)    { btnCls='done'; btnTxt='✓ מומש'; }
+      else if (canBuy){ btnCls='go'; }
+      const onclick = !used ? `onclick="redeem('${r.id}',${r.pts},0)"` : '';
+      h += `<div class="ri${used?' used':''}${canBuy?' can':''}">
+        <div style="font-size:20px;margin-left:4px">${r.emoji||'⭐'}</div>
+        <div class="ri-body">
+          <div class="ri-title">${r.title}</div>
+          <div class="ri-desc">${r.desc||''}</div>
+        </div>
+        <div class="ri-right">
+          <div class="ri-cost">${r.pts}</div>
+          <button class="rbtn ${btnCls}" ${onclick}>${btnTxt}</button>
+        </div>
+      </div>`;
+    });
+  }
+
+  document.getElementById('rewards-content').innerHTML = h;
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — CALENDAR
+═══════════════════════════════════════════════════ */
+function renderCal() {
+  const now = new Date();
+  document.getElementById('cal-mth').textContent =
+    now.toLocaleDateString('he-IL',{month:'long',year:'numeric'});
+  document.getElementById('cal-dows').innerHTML =
+    ['א','ב','ג','ד','ה','ו','ש'].map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  const first = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+  const days  = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  let g = '';
+  for(let i=0;i<first;i++) g+='<div class="cal-day mt"></div>';
+  for(let d=1;d<=days;d++){
+    const ds = new Date(now.getFullYear(),now.getMonth(),d).toDateString();
+    const hit = S.history.some(h=>h.date===ds);
+    const isT = ds===now.toDateString();
+    g+=`<div class="cal-day${hit?' hit':''}${isT?' now':''}">${d}</div>`;
+  }
+  document.getElementById('cal-grid').innerHTML = g;
+  document.getElementById('hist-list').innerHTML =
+    S.history.slice(0,30).map(h=>`
+      <div class="hist-row">
+        <div>
+          <div class="hist-d">${new Date(h.date).toLocaleDateString('he-IL',{weekday:'short',day:'numeric',month:'short'})}</div>
+          <div class="hist-t">${h.tasks} משימות</div>
+        </div>
+        <div class="hist-p">+${h.pts}</div>
+      </div>`).join('') ||
+    '<div style="text-align:center;color:var(--txt3);padding:40px 0;font-size:13px">אין עדיין היסטוריה</div>';
+}
+
+/* ═══════════════════════════════════════════════════
+   GRACE DAY
+═══════════════════════════════════════════════════ */
+function graceAvailableNow() {
+  const thisMonth = new Date().toISOString().slice(0,7);
+  return S.graceUsedMonth !== thisMonth;
+}
+function useGrace() {
+  if (!graceAvailableNow()) { toast('יום החסד כבר שומש החודש'); return; }
+  if (!confirm('להשתמש ביום החסד? הרצף שלך יישמר גם אם תפספס יום החודש.')) return;
+  const thisMonth = new Date().toISOString().slice(0,7);
+  S.graceUsedMonth = thisMonth;
+  save();
+  renderActive();
+  toast('🛡️ יום החסד שמור — הרצף מוגן!');
+}
+function updateGraceBadge() {
+  const el = document.getElementById('grace-badge');
+  if (!el) return;
+  const avail = graceAvailableNow();
+  el.className = 'grace-badge' + (avail ? '' : ' used');
+  el.textContent = avail ? '🛡️ יום חסד — שמור לשעת הצורך' : '🛡️ יום חסד שומש החודש';
+}
+
+/* ═══════════════════════════════════════════════════
+   CUSTOM REWARDS
+═══════════════════════════════════════════════════ */
+function openAddReward() { openModal('modal-reward'); }
+function saveCustomReward() {
+  const title = document.getElementById('cr-title').value.trim();
+  const pts   = parseInt(document.getElementById('cr-pts').value);
+  if (!title || !pts || pts < 1) { toast('שם ונקודות הם שדות חובה'); return; }
+  const emoji = document.getElementById('cr-emoji').value.trim() || '⭐';
+  const desc  = document.getElementById('cr-desc').value.trim() || '';
+  const id = 'custom_' + Date.now();
+  if (!S.customRewards) S.customRewards = [];
+  S.customRewards.push({ id, title, desc, pts, emoji });
+  save();
+  closeModal('modal-reward');
+  document.getElementById('cr-title').value = '';
+  document.getElementById('cr-pts').value = '';
+  document.getElementById('cr-desc').value = '';
+  document.getElementById('cr-emoji').value = '';
+  renderSettings();
+  toast('✓ הצ\'ופר נוסף!');
+}
+function deleteCustomReward(id) {
+  if (!confirm('למחוק צ\'ופר זה?')) return;
+  S.customRewards = (S.customRewards||[]).filter(r=>r.id!==id);
+  S.redeemed = S.redeemed.filter(r=>r!==id);
+  save();
+  renderSettings();
+}
+
+/* ═══════════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════════ */
+function resetData() {
+  if (!confirm('למחוק את כל הנתונים ולהתחיל מחדש?\nפעולה זו אינה הפיכה.')) return;
+  if (!confirm('האם אתה בטוח לחלוטין?')) return;
+  localStorage.removeItem(SK);
+  S = def();
+  save();
+  location.reload();
+}
+
+/* ═══════════════════════════════════════════════════
+   MODAL HELPERS
+═══════════════════════════════════════════════════ */
+function openModal(id)  { document.getElementById(id).classList.add('on'); }
+function closeModal(id) { document.getElementById(id).classList.remove('on'); }
+
+/* ═══════════════════════════════════════════════════
+   RENDER — SETTINGS
+═══════════════════════════════════════════════════ */
+function renderSettings() {
+  const thisMonth = new Date().toISOString().slice(0,7);
+  const graceAvail = graceAvailableNow();
+  const el = document.getElementById('grace-status-txt');
+  if (el) el.textContent = graceAvail
+    ? '✓ יום חסד זמין החודש'
+    : `שומש בחודש זה (${S.graceUsedMonth})`;
+
+  const list = document.getElementById('custom-rewards-list');
+  if (!list) return;
+  const cr = S.customRewards || [];
+  if (!cr.length) { list.innerHTML = '<div style="font-size:12px;color:var(--txt3);margin-bottom:10px">אין עדיין צ\'ופרים אישיים</div>'; return; }
+  list.innerHTML = cr.map(r=>`
+    <div class="ri" style="margin-bottom:8px">
+      <div style="font-size:20px;margin-left:4px">${r.emoji}</div>
+      <div class="ri-body">
+        <div class="ri-title">${r.title}</div>
+        <div class="ri-desc">${r.desc||''}</div>
+      </div>
+      <div class="ri-right">
+        <div class="ri-cost">${r.pts}</div>
+        <button class="rbtn" style="background:rgba(240,80,80,.12);color:var(--red);font-size:11px" onclick="deleteCustomReward('${r.id}')">מחק</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════ */
+const PAGES = [
+  {id:'today',   render:renderToday},
+  {id:'levels',  render:renderLevels},
+  {id:'rewards', render:renderRewards},
+  {id:'cal',     render:renderCal},
+  {id:'settings',render:renderSettings}
+];
+let activePage = 'today';
+
+function nav(p) {
+  activePage = p;
+  PAGES.forEach(({id})=>{
+    document.getElementById('pg-'+id).classList.toggle('on', id===p);
+    document.getElementById('btn-'+id).classList.toggle('on', id===p);
+  });
+  const page = PAGES.find(x=>x.id===p);
+  if (page) page.render();
+}
+
+function renderActive() {
+  const page = PAGES.find(x=>x.id===activePage);
+  if (page) page.render();
+}
+
+/* ═══════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════ */
+let toastT;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('up');
+  clearTimeout(toastT);
+  toastT = setTimeout(()=>el.classList.remove('up'), 2500);
+}
+
+/* ═══════════════════════════════════════════════════
+   LEVEL-UP OVERLAY + CONFETTI
+═══════════════════════════════════════════════════ */
+function closeLU() { document.getElementById('lu').classList.remove('on'); }
+
+function launchConfetti() {
+  const canvas = document.getElementById('conf-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const pieces = Array.from({length:80}, ()=>({
+    x: Math.random()*canvas.width, y: -10,
+    vx: (Math.random()-0.5)*4, vy: Math.random()*4+2,
+    size: Math.random()*8+4, color: ['#f0c040','#38d68a','#5b8df8','#f05080','#9b7ef8'][Math.floor(Math.random()*5)],
+    rot: Math.random()*360, vrot: (Math.random()-0.5)*8, alpha:1
+  }));
+  let frame;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let alive = false;
+    pieces.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vrot; p.alpha-=0.008;
+      if(p.alpha>0){alive=true;}
+      ctx.save(); ctx.globalAlpha=Math.max(0,p.alpha);
+      ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color; ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size/2);
+      ctx.restore();
+    });
+    if(alive) frame=requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+  setTimeout(()=>cancelAnimationFrame(frame),4000);
+}
+
+if (pendingLU) {
+  document.getElementById('lu-title').textContent = `עלית לשלב ${pendingLU}!`;
+  document.getElementById('lu-sub').textContent = `כל הכבוד — הרצף הוכיח שינוי אמיתי. המשימות מאתגרות יותר, אבל גם הגרסה שלך טובה יותר.`;
+  setTimeout(()=>{ document.getElementById('lu').classList.add('on'); launchConfetti(); }, 700);
+}
+
+/* ═══════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════ */
+renderToday();
+</script>
+</body>
+</html>
